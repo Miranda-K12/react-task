@@ -1,0 +1,93 @@
+.form {
+  width: 50%;
+  margin: 100px auto 0 auto;
+  box-shadow: rgba(50, 50, 93, 0.25) 0 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0 3px 7px -3px;
+  padding: 24px;
+}
+
+.form-input {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+
+label {
+  font-weight: 600;
+  flex-shrink: 0;
+  font-size: 16px;
+  width: 120px;
+  display: flex; /* Added */
+  align-items: center; /* Added to vertically center input and label text */
+  gap: 8px; /* Added space between radio/checkbox and text */
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  flex-grow: 1;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  min-width: 0;
+}
+
+.radio-group,
+.check-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+::placeholder {
+  font-size: 14px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  font-family: inherit;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+textarea:focus,
+.form-input:focus,
+select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus {
+  box-shadow: 0 0 5px rgba(15, 15, 15, 0.5);
+}
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+}
+
+button {
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 5px rgba(15, 15, 15, 0.5);
+}
+
+.submit {
+  background-color: #1717e4;
+  color: white;
+}
