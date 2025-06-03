@@ -1,6 +1,7 @@
 import React from "react";
 import "./form.css";
 import { useState } from "react";
+import CollectData from "../data/data";
 
 function Button({ type, className = "", onClick, children }) {
   return (
@@ -37,19 +38,14 @@ function SelectOptions({ id, name, label, onChange, value, options }) {
     <div className="form-input">
       <label htmlFor={id}>{label}</label>
       <select id={id} name={name} value={value} onChange={onChange}>
-        <option value="">Select a {label.toLowerCase()}</option>
-
-        {options.map((option) => {
+        <option value="" disabled>
+          Choose the color
+        </option>
+        {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
-          </option>;
-        })}
-        <option value="">Select a color</option>
-        <option value="red">Red</option>
-        <option value="blue">Blue</option>
-        <option value="green">Green</option>
-        <option value="yellow">Yellow</option>
-        <option value="purple">Purple</option>
+          </option>
+        ))}
       </select>
     </div>
   );
@@ -104,95 +100,175 @@ function Form() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [age, setAge] = useState("");
+  const [employed, setEmployed] = useState(false);
   const [notes, setNotes] = useState("");
-  const [sauces, setSauces] = useState("");
+  const [sauces, setSauces] = useState([]);
   const [beststooge, setBestStooge] = useState("");
-  function handleChange(event) {
-    setFirstName(event.target.value);
-  }
-  return (
-    <div className="form">
-      <Input
-        id="firstName"
-        label="First Name"
-        name="firstName"
-        placeholder="First Name"
-        value={firstName}
-        onChange={handleChange}
-      />
-      <Input
-        id="lastName"
-        label="Last Name"
-        name="lastName"
-        placeholder="Last Name"
-        value={lastName}
-        onChange={handleChange}
-      />
-      <Input
-        id="age"
-        type="number"
-        label="Age"
-        name="age"
-        placeholder="Age"
-        value={age}
-        onChange={handleChange}
-      />
-      <div className="form-input">
-        <label htmlFor="employed">Employed</label>
-        <input type="checkbox" id="employed" name="employed" />
-      </div>
-      <SelectOptions
-        id="favoriteColor"
-        name="favoriteColor"
-        label="Favorite Color"
-        onChange={handleChange}
-        options={[
-          { value: "red", label: "Red" },
-          { value: "blue", label: "Blue" },
-          { value: "green", label: "Green" },
-          { value: "yellow", label: "Yellow" },
-          { value: "purple", label: "Purple" },
-        ]}
-      />
-      <CheckBox
-        label="Sauces"
-        options={[
-          { value: "ketchup", label: "Ketchup" },
-          { value: "mustard", label: "Mustard" },
-          { value: "mayonnaise", label: "Mayonnaise" },
-          { value: "guacamole", label: "Guacamole" },
-        ]}
-        selectedValues={sauces}
-        onChange={setSauces}
-        name="sauces"
-      />
-      <RadioBox
-        label="Best Stooge"
-        options={[
-          { value: "larry", label: "Larry" },
-          { value: "moe", label: "Moe" },
-          { value: "curly", label: "Curly" },
-        ]}
-        selectedValues={beststooge}
-        onChange={setBestStooge}
-      />
+  const [favoriteColor, setFavoriteColor] = useState("");
+  const [submissions, setSubmissions] = useState([]);
 
-      <Input
-        id="notes"
-        label="Notes"
-        name="notes"
-        type="textarea"
-        placeholder="Notes"
-        value={notes}
-        onChange={handleChange}
-      />
-      <div className="buttons-wrapper">
-        <Button className="submit">Submit</Button>
-        <Button type="reset" className="reset">
-          Reset
-        </Button>
-      </div>
-      <div className="object-info-wrapper"></div>
+  function handleChange(e) {
+    const { name, value, checked } = e.target;
+    switch (name) {
+      case "firstName":
+        setFirstName(value);
+        break;
+      case "lastName":
+        setLastName(value);
+        break;
+      case "age":
+        setAge(value);
+        break;
+      case "employed":
+        setEmployed(checked);
+        break;
+      case "favoriteColor":
+        setFavoriteColor(value);
+        break;
+      case "notes":
+        setNotes(value);
+        break;
+      default:
+        break;
+    }
+  }
+  function handleSauceChange(e) {
+    const { value, checked } = e.target;
+    if (checked) {
+      setSauces((prev) => [...prev, value]);
+    } else {
+      setSauces((prev) => prev.filter((sauces) => sauces !== value));
+    }
+  }
+  function handleStoogeChange(value) {
+    setBestStooge(value);
+  }
+
+  function handleSubmit(e) {
+    if (!firstName.trim() || !lastName.trim()) {
+      alert("First Name and Last Name are required");
+      return;
+    }
+    e.preventDefault();
+    const collectedData = {
+      firstName,
+      lastName,
+      age,
+      employed,
+      favoriteColor,
+      sauces,
+      beststooge,
+      notes,
+    };
+    setSubmissions((prev) => [...prev, collectedData]);
+    handleReset();
+  }
+  function handleReset() {
+    setFirstName("");
+    setLastName("");
+    setAge("");
+    setEmployed(false);
+    setNotes("");
+    setSauces([]);
+    setBestStooge("");
+    setFavoriteColor("");
+  }
+
+  return (
+    <div>
+      <form className="form" onSubmit={handleSubmit}>
+        <Input
+          id="firstName"
+          label="First Name"
+          name="firstName"
+          placeholder="First Name"
+          value={firstName}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          id="lastName"
+          label="Last Name"
+          name="lastName"
+          placeholder="Last Name"
+          value={lastName}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          id="age"
+          type="number"
+          label="Age"
+          name="age"
+          placeholder="Age"
+          value={age}
+          onChange={handleChange}
+        />
+        <div className="form-input">
+          <label htmlFor="employed">Employed</label>
+          <input
+            type="checkbox"
+            id="employed"
+            name="employed"
+            checked={employed}
+            onChange={handleChange}
+          />
+        </div>
+        <SelectOptions
+          id="favoriteColor"
+          name="favoriteColor"
+          label="Favorite Color"
+          onChange={handleChange}
+          value={favoriteColor}
+          options={[
+            { value: "green", label: "Green" },
+            { value: "red", label: "Red" },
+            { value: "blue", label: "Blue" },
+            { value: "yellow", label: "Yellow" },
+            { value: "purple", label: "Purple" },
+          ]}
+        />
+        <CheckBox
+          label="Sauces"
+          options={[
+            { value: "ketchup", label: "Ketchup" },
+            { value: "mustard", label: "Mustard" },
+            { value: "mayonnaise", label: "Mayonnaise" },
+            { value: "guacamole", label: "Guacamole" },
+          ]}
+          selectedValues={sauces}
+          onChange={handleSauceChange}
+          name="sauces"
+        />
+        <RadioBox
+          label="Best Stooge"
+          options={[
+            { value: "larry", label: "Larry" },
+            { value: "moe", label: "Moe" },
+            { value: "curly", label: "Curly" },
+          ]}
+          selectedValue={beststooge}
+          onChange={handleStoogeChange}
+        />
+
+        <Input
+          id="notes"
+          label="Notes"
+          name="notes"
+          placeholder="Notes"
+          value={notes}
+          onChange={handleChange}
+        />
+        <div className="buttons-wrapper">
+          <Button type="submit" className="submit">
+            Submit
+          </Button>
+          <Button type="reset" className="reset" onClick={handleReset}>
+            Reset
+          </Button>
+        </div>
+      </form>
+      <CollectData submissions={submissions} />
     </div>
   );
 }
